@@ -11,8 +11,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import uz.codingtech.messengerdashboard.presentation.common.navigation.Home
+import uz.codingtech.messengerdashboard.presentation.common.navigation.Login
 import uz.codingtech.messengerdashboard.presentation.common.navigation.MainNavGraph
-import uz.codingtech.messengerdashboard.presentation.common.navigation.Screen
 import uz.codingtech.messengerdashboard.presentation.main_app.vm.MainViewModel
 import uz.codingtech.messengerdashboard.presentation.main_app.vm.MainViewModel.AuthState.Authorized
 import uz.codingtech.messengerdashboard.presentation.main_app.vm.MainViewModel.AuthState.Loading
@@ -21,18 +22,18 @@ import uz.codingtech.messengerdashboard.presentation.main_app.vm.MainViewModel.A
 @Composable
 fun MainApp(viewModel: MainViewModel = hiltViewModel()) {
     val navController = rememberNavController()
-    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination
     val backgroundColor = when (currentRoute) {
-        Screen.Home.route -> Color(0xFFFFFFFF)
+        Home -> Color(0xFFFFFFFF)
         else -> Color(0xFFFFFFFF)
     }
 
     val authState by viewModel.authState.collectAsState()
 
     val startRoute = when (authState) {
-        is Authorized -> Screen.Home.route
-        is Unauthorized -> Screen.Login.route
-        is Loading -> Screen.Login.route
+        is Authorized -> Home
+        is Unauthorized -> Login
+        is Loading -> Login
     }
 
     Scaffold(

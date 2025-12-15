@@ -36,7 +36,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import uz.codingtech.messengerdashboard.presentation.common.navigation.Screen
+import uz.codingtech.messengerdashboard.presentation.common.navigation.Home
 
 @Composable
 fun Login(navController: NavController, modifier: Modifier = Modifier) {
@@ -128,7 +128,7 @@ fun Login(navController: NavController, modifier: Modifier = Modifier) {
 
                 Button(
                     onClick = {
-                        navController.navigate(Screen.Home.route)
+                        navController.navigate(Home)
                     },
                     modifier = Modifier
                         .fillMaxWidth()

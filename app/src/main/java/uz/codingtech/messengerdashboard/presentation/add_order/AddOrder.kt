@@ -1,0 +1,205 @@
+package uz.codingtech.messengerdashboard.presentation.add_order
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import uz.codingtech.messengerdashboard.presentation.home.Order
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddOrder(
+    onBack: () -> Unit,
+    onSave: (Order) -> Unit
+) {
+    var title by remember { mutableStateOf("") }
+    var channelUsername by remember { mutableStateOf("") }
+    var channelId by remember { mutableStateOf("") }
+    var cpm by remember { mutableStateOf("") }
+    var budget by remember { mutableStateOf("") }
+    var isActive by remember { mutableStateOf(true) }
+
+    val totalViews = remember(cpm, budget) {
+        calculateViews(cpm, budget)
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("New Order") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Default.ArrowBack, null)
+                    }
+                }
+            )
+        }
+    ) { padding ->
+
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+
+            Text(
+                "Order information",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Order title") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = channelUsername,
+                onValueChange = { channelUsername = it },
+                label = { Text("Channel username") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = channelId,
+                onValueChange = { channelId = it },
+                label = { Text("Channel ID") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Divider()
+
+            OutlinedTextField(
+                value = cpm,
+                onValueChange = { cpm = it },
+                label = { Text("CPM ($)") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = budget,
+                onValueChange = { budget = it },
+                label = { Text("Budget ($)") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // 🔹 Auto calculated views (READ ONLY)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        "Estimated views",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "%,d views".format(totalViews),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+
+            Divider()
+
+            // 🔹 Active switch
+            Card(
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(14.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text("Order status")
+                        Text(
+                            if (isActive) "Active" else "Paused",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    Switch(
+                        checked = isActive,
+                        onCheckedChange = { isActive = it }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                onClick = {
+                    onSave(
+                        Order(
+                            title = title,
+                            channelUsername = channelUsername,
+                            channelId = channelId.toLongOrNull() ?: 0,
+                            cpm = cpm,
+                            budget = budget,
+                            viewCount = totalViews, // 🔥 auto
+                            viewedCount = 0,
+                            isCompleted = false,
+                            isActive = isActive,
+                            createdDate = ""
+                        )
+                    )
+                }
+            ) {
+                Icon(Icons.Default.Check, null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Create order")
+            }
+        }
+    }
+}

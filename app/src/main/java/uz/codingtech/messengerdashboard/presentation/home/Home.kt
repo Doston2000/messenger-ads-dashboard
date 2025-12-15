@@ -1,5 +1,6 @@
 package uz.codingtech.messengerdashboard.presentation.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,33 +34,80 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import uz.codingtech.messengerdashboard.presentation.common.navigation.AddOrder
+import uz.codingtech.messengerdashboard.presentation.common.navigation.OrderDetailsInfo
 
-@ExperimentalMaterial3Api
 @Composable
 fun Home(navController: NavController, modifier: Modifier = Modifier) {
     OrderListScreen(navController = navController, modifier = modifier)
 }
 
-// Data model
-
 data class Order(
     val title: String,
-    val createdDate: String,
+    val channelId: Long,
+    val channelUsername: String,
     val cpm: String,
     val budget: String,
-    val url: String,
     val isCompleted: Boolean,
-    val isActive: Boolean
+    val isActive: Boolean,
+    var viewCount: Int,
+    var viewedCount: Int,
+    val createdDate: String
 )
 
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderListScreen(navController: NavController, modifier: Modifier = Modifier) {
     val orders = remember {
         listOf(
-            Order("Order #1", "2025-01-01", "$2.5", "$100", "https://example.com", isCompleted = true, isActive = false),
-            Order("Order #2", "2025-01-03", "$3.1", "$250", "https://google.com", isCompleted = false, isActive = true),
-            Order("Order #3", "2025-01-05", "$1.9", "$80", "https://openai.com", isCompleted = false, isActive = false)
+            Order(
+                "Order #1",
+                1000001,
+                "KunUz1",
+                "$2.5",
+                "$100",
+                isCompleted = true,
+                isActive = false,
+                40000,
+                40000,
+                "2025-01-01"
+            ),
+            Order(
+                "Order #2",
+                1000002,
+                "KunUz2",
+                "$5",
+                "$100",
+                isCompleted = false,
+                isActive = true,
+                20000,
+                10000,
+                "2025-01-02"
+            ),
+            Order(
+                "Order #3",
+                1000003,
+                "KunUz3",
+                "$2",
+                "$100",
+                isCompleted = false,
+                isActive = false,
+                50000,
+                10000,
+                "2025-01-03"
+            ),
+            Order(
+                "Order #1",
+                1000004,
+                "KunUz1",
+                "$1",
+                "$100",
+                isCompleted = false,
+                isActive = true,
+                100000,
+                50000,
+                "2025-01-04"
+            )
         )
     }
 
@@ -84,7 +131,7 @@ fun OrderListScreen(navController: NavController, modifier: Modifier = Modifier)
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                // navController.navigate("add_order")
+                navController.navigate(AddOrder)
             }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Order")
             }
@@ -98,16 +145,23 @@ fun OrderListScreen(navController: NavController, modifier: Modifier = Modifier)
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(orders) { order ->
-                OrderItem(order = order)
+                OrderItem(
+                    order = order,
+                    onClick = {
+                        navController.navigate(OrderDetailsInfo(id =  "1"))
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun OrderItem(order: Order) {
+fun OrderItem(order: Order, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -155,7 +209,7 @@ fun OrderItem(order: Order) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = order.url,
+                    text = order.channelUsername,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -179,10 +233,10 @@ enum class StatusType {
 @Composable
 fun StatusChip(text: String, statusType: StatusType) {
     val backgroundColor = when (statusType) {
-        StatusType.COMPLETED -> Color(0xFF4CAF50) // Green
-        StatusType.IN_PROGRESS -> MaterialTheme.colorScheme.primary // Blue
-        StatusType.ACTIVE -> Color(0xFF4CAF50) // Green
-        StatusType.INACTIVE -> MaterialTheme.colorScheme.error // Red
+        StatusType.COMPLETED -> Color(0xFF4CAF50)
+        StatusType.IN_PROGRESS -> MaterialTheme.colorScheme.primary
+        StatusType.ACTIVE -> Color(0xFF4CAF50)
+        StatusType.INACTIVE -> MaterialTheme.colorScheme.error
     }
 
     val contentColor = Color.White
