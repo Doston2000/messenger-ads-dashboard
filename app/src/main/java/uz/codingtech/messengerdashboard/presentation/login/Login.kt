@@ -1,5 +1,6 @@
 package uz.codingtech.messengerdashboard.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,11 +36,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import uz.codingtech.messengerdashboard.domain.models.User
 import uz.codingtech.messengerdashboard.presentation.common.navigation.Home
+import uz.codingtech.messengerdashboard.presentation.main_app.vm.MainViewModel
 
 @Composable
-fun Login(navController: NavController, modifier: Modifier = Modifier) {
+fun Login(navController: NavController, modifier: Modifier = Modifier, viewmodel: MainViewModel = hiltViewModel()) {
     val context = LocalContext.current
 
     var username by remember { mutableStateOf("") }
@@ -128,7 +132,15 @@ fun Login(navController: NavController, modifier: Modifier = Modifier) {
 
                 Button(
                     onClick = {
-                        navController.navigate(Home)
+                        if (username != "" && password != "") {
+                            viewmodel.login(User(username, password)){
+                                if (it == null){
+                                    navController.navigate(Home)
+                                }else{
+                                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()

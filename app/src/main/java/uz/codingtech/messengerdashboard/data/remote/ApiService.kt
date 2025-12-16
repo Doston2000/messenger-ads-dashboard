@@ -1,34 +1,36 @@
 package uz.codingtech.messengerdashboard.data.remote
 
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
+import uz.codingtech.messengerdashboard.domain.models.AccessToken
 import uz.codingtech.messengerdashboard.domain.models.AuthData
+import uz.codingtech.messengerdashboard.domain.models.Balance
+import uz.codingtech.messengerdashboard.domain.models.RefreshToken
+import uz.codingtech.messengerdashboard.domain.models.Status
+import uz.codingtech.messengerdashboard.domain.models.Token
 import uz.codingtech.messengerdashboard.domain.models.User
 
 interface ApiService {
 
-    @GET("login")
-    suspend fun login(@Body user: User): AuthData
+    @POST("auth/login/")
+    suspend fun login(@Body user: User): Response<AuthData>
 
-    suspend fun checkToken(token: String){
+    @POST("auth/verify/")
+    suspend fun checkToken(
+        @Body token: Token
+    ): Response<Status>
 
-    }
+    @POST("auth/refresh/")
+    suspend fun refreshToken(
+        @Body refresh: RefreshToken
+    ): Response<AccessToken>
 
-//    @GET("notes")
-//    suspend fun getNotes(): List<NoteEntity>
-//
-//    @POST("notes")
-//    suspend fun postNote(@Body note: NoteEntity)
-//
-//    @PUT("notes/{id}")
-//    suspend fun updateNote(
-//        @Path("id") id: Int,
-//        @Body note: NoteEntity
-//    )
-//
-//    @DELETE("notes/{id}")
-//    suspend fun deleteNote(
-//        @Path("id") id: Int
-//    )
+    @GET("balance/")
+    suspend fun getBalance(
+        @Header("Authorization") token: String
+    ): Response<Balance>
 
 }

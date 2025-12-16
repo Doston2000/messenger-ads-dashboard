@@ -19,7 +19,7 @@ class TokenDataStore @Inject constructor(
     companion object {
         private val ACCESS_TOKEN = stringPreferencesKey("access_token")
         private val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
-        private val TOKEN = stringPreferencesKey("token")
+        private val USER_ID = stringPreferencesKey("userId")
         private val USERNAME = stringPreferencesKey("username")
     }
 
@@ -27,18 +27,18 @@ class TokenDataStore @Inject constructor(
 
     suspend fun saveAuthData(authData: AuthData) {
         dataStore.edit { prefs ->
-            prefs[ACCESS_TOKEN] = authData.accessToken
-            prefs[REFRESH_TOKEN] = authData.refreshToken
-            prefs[TOKEN] = authData.token
+            prefs[ACCESS_TOKEN] = authData.access
+            prefs[REFRESH_TOKEN] = authData.refresh
+            prefs[USER_ID] = authData.user_id
             prefs[USERNAME] = authData.username
         }
     }
 
     val authData: Flow<AuthData?> = dataStore.data.map { prefs ->
         AuthData(
-            accessToken = prefs[ACCESS_TOKEN] ?: "",
-            refreshToken = prefs[REFRESH_TOKEN] ?: "",
-            token = prefs[TOKEN] ?: "",
+            access = prefs[ACCESS_TOKEN] ?: "",
+            refresh = prefs[REFRESH_TOKEN] ?: "",
+            user_id = prefs[USER_ID] ?: "",
             username = prefs[USERNAME] ?: ""
         )
     }

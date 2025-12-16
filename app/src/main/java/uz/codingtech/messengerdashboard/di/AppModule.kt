@@ -11,20 +11,25 @@ import retrofit2.converter.gson.GsonConverterFactory
 import uz.codingtech.messengerdashboard.data.datastore.TokenDataStore
 import uz.codingtech.messengerdashboard.data.remote.ApiService
 import uz.codingtech.messengerdashboard.data.repository.AuthRepositoryImpl
+import uz.codingtech.messengerdashboard.data.repository.UserRepositoryImpl
 import uz.codingtech.messengerdashboard.domain.models.AuthUseCaseModel
+import uz.codingtech.messengerdashboard.domain.models.UserUseCaseModel
 import uz.codingtech.messengerdashboard.domain.repository.AuthRepository
+import uz.codingtech.messengerdashboard.domain.repository.UserRepository
 import uz.codingtech.messengerdashboard.domain.usecase.auth.CheckTokenUseCase
 import uz.codingtech.messengerdashboard.domain.usecase.auth.ClearAuthUseCase
 import uz.codingtech.messengerdashboard.domain.usecase.auth.GetAuthUseCase
 import uz.codingtech.messengerdashboard.domain.usecase.auth.LoginUseCase
+import uz.codingtech.messengerdashboard.domain.usecase.auth.RefreshTokenUseCase
 import uz.codingtech.messengerdashboard.domain.usecase.auth.SaveAuthUseCase
+import uz.codingtech.messengerdashboard.domain.usecase.user.GetBalanceUseCase
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private const val BASE_URL = "https://yourapiurl.com/api/"
+    private const val BASE_URL = "http://192.168.1.21:8000/api/"
 
     @Provides
     @Singleton
@@ -58,13 +63,31 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUseCase(authRepository: AuthRepository): AuthUseCaseModel {
+    fun provideUserRepository(
+        tokenDataStore: TokenDataStore,
+        apiService: ApiService
+    ): UserRepository {
+        return UserRepositoryImpl(tokenDataStore, apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthUseCase(authRepository: AuthRepository): AuthUseCaseModel {
         return AuthUseCaseModel(
             loginUseCase = LoginUseCase(authRepository),
             checkTokenUseCase = CheckTokenUseCase(authRepository),
+            refreshTokenUseCase = RefreshTokenUseCase(authRepository),
             getAuthUseCase = GetAuthUseCase(authRepository),
             saveAuthUseCase = SaveAuthUseCase(authRepository),
             clearAuthUseCase = ClearAuthUseCase(authRepository)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserUseCase(userRepository: UserRepository): UserUseCaseModel {
+        return UserUseCaseModel(
+            getBalanceUseCase = GetBalanceUseCase(userRepository)
         )
     }
 

@@ -29,10 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import uz.codingtech.messengerdashboard.domain.models.Order
 import uz.codingtech.messengerdashboard.presentation.common.PlayPauseButton
 import uz.codingtech.messengerdashboard.presentation.common.StatusBadge
 import uz.codingtech.messengerdashboard.presentation.common.ViewsProgress
-import uz.codingtech.messengerdashboard.presentation.home.Order
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

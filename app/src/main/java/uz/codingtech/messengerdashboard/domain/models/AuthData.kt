@@ -1,8 +1,9 @@
 package uz.codingtech.messengerdashboard.domain.models
 
 data class AuthData(
-    val accessToken: String = "",
-    val refreshToken: String = "",
-    val token: String = "",
-    val username: String = ""
+    var refresh: String = "",
+    var access: String = "",
+    var username: String = "",
+    var user_id: String = "",
+    var is_admin: Boolean = false
 )

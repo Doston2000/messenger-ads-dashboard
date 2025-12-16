@@ -27,37 +27,65 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
+import uz.codingtech.messengerdashboard.domain.models.Order
 import uz.codingtech.messengerdashboard.presentation.common.navigation.AddOrder
 import uz.codingtech.messengerdashboard.presentation.common.navigation.OrderDetailsInfo
-
-@Composable
-fun Home(navController: NavController, modifier: Modifier = Modifier) {
-    OrderListScreen(navController = navController, modifier = modifier)
-}
-
-data class Order(
-    val title: String,
-    val channelId: Long,
-    val channelUsername: String,
-    val cpm: String,
-    val budget: String,
-    val isCompleted: Boolean,
-    val isActive: Boolean,
-    var viewCount: Int,
-    var viewedCount: Int,
-    val createdDate: String
-)
+import uz.codingtech.messengerdashboard.presentation.main_app.vm.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrderListScreen(navController: NavController, modifier: Modifier = Modifier) {
+fun Home(navController: NavController, viewModel: MainViewModel = hiltViewModel()) {
+
+    val userData by viewModel.userData.collectAsState()
+    val userBalance by viewModel.userBalance.collectAsState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_CREATE -> {
+                    viewModel.getBalance()
+                }
+
+                Lifecycle.Event.ON_RESUME -> {
+
+                }
+
+                Lifecycle.Event.ON_PAUSE -> {
+
+                }
+
+                Lifecycle.Event.ON_DESTROY -> {
+
+                }
+
+                else -> {}
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+
     val orders = remember {
         listOf(
             Order(
@@ -116,10 +144,10 @@ fun OrderListScreen(navController: NavController, modifier: Modifier = Modifier)
             TopAppBar(
                 title = { Text("Orders") },
                 actions = {
+                    Text(text = "${userBalance?.amount} $")
                     IconButton(onClick = {
-                        navController.navigate("login") {
-                            popUpTo("home") { inclusive = true }
-                        }
+                        viewModel.logout()
+                        navController.popBackStack()
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -155,7 +183,6 @@ fun OrderListScreen(navController: NavController, modifier: Modifier = Modifier)
         }
     }
 }
-
 @Composable
 fun OrderItem(order: Order, onClick: () -> Unit) {
     Card(
