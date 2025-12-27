@@ -1,5 +1,8 @@
-package uz.codingtech.messengerdashboard.presentation.home
+package uz.codingtech.messengerdashboard.presentation.orders
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,133 +13,70 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FileCopy
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import uz.codingtech.messengerdashboard.domain.models.Order
+import uz.codingtech.messengerdashboard.domain.models.OrderModel
 import uz.codingtech.messengerdashboard.presentation.common.navigation.AddOrder
 import uz.codingtech.messengerdashboard.presentation.common.navigation.OrderDetailsInfo
-import uz.codingtech.messengerdashboard.presentation.main_app.vm.MainViewModel
+import uz.codingtech.messengerdashboard.utils.copy
+import uz.codingtech.messengerdashboard.utils.formatDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(navController: NavController, viewModel: MainViewModel = hiltViewModel()) {
+fun Orders(
+    navController: NavController,
+    orderViewModel: OrderViewModel = hiltViewModel()
+) {
 
-    val userData by viewModel.userData.collectAsState()
-    val userBalance by viewModel.userBalance.collectAsState()
+    val context = LocalContext.current
+    val activity = context as? Activity
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_CREATE -> {
-                    viewModel.getBalance()
-                }
-
-                Lifecycle.Event.ON_RESUME -> {
-
-                }
-
-                Lifecycle.Event.ON_PAUSE -> {
-
-                }
-
-                Lifecycle.Event.ON_DESTROY -> {
-
-                }
-
-                else -> {}
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+    BackHandler {
+        activity?.finish()
     }
 
+    val state by orderViewModel.state.collectAsState()
 
-    val orders = remember {
-        listOf(
-            Order(
-                "Order #1",
-                1000001,
-                "KunUz1",
-                "$2.5",
-                "$100",
-                isCompleted = true,
-                isActive = false,
-                40000,
-                40000,
-                "2025-01-01"
-            ),
-            Order(
-                "Order #2",
-                1000002,
-                "KunUz2",
-                "$5",
-                "$100",
-                isCompleted = false,
-                isActive = true,
-                20000,
-                10000,
-                "2025-01-02"
-            ),
-            Order(
-                "Order #3",
-                1000003,
-                "KunUz3",
-                "$2",
-                "$100",
-                isCompleted = false,
-                isActive = false,
-                50000,
-                10000,
-                "2025-01-03"
-            ),
-            Order(
-                "Order #1",
-                1000004,
-                "KunUz1",
-                "$1",
-                "$100",
-                isCompleted = false,
-                isActive = true,
-                100000,
-                50000,
-                "2025-01-04"
-            )
-        )
+    val navBackStackEntry = navController.currentBackStackEntry
+    val savedStateHandle = navBackStackEntry?.savedStateHandle
+
+    LaunchedEffect(savedStateHandle) {
+        savedStateHandle?.getStateFlow<Boolean>("order_updated", false)
+            ?.collect { updated ->
+                if (updated) {
+                    orderViewModel.refreshOrders()
+                    savedStateHandle["order_updated"] = false
+                }
+            }
     }
 
     Scaffold(
@@ -144,10 +84,10 @@ fun Home(navController: NavController, viewModel: MainViewModel = hiltViewModel(
             TopAppBar(
                 title = { Text("Orders") },
                 actions = {
-                    Text(text = "${userBalance?.amount} $")
+                    Text(text = "${state.successBalance?.amount} $")
                     IconButton(onClick = {
-                        viewModel.logout()
-                        navController.popBackStack()
+                        orderViewModel.event(OrdersEvent.Logout)
+                        activity?.finish()
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -165,26 +105,81 @@ fun Home(navController: NavController, viewModel: MainViewModel = hiltViewModel(
             }
         }
     ) { paddingValues ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(orders) { order ->
-                OrderItem(
-                    order = order,
-                    onClick = {
-                        navController.navigate(OrderDetailsInfo(id =  "1"))
-                    }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "UserId: ${state.userId}",
+                    modifier = Modifier
+                        .weight(1f) // bitta qatorda sig‘diradi
+                        .padding(end = 8.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium
                 )
+
+                IconButton(
+                    onClick = {
+                        copy(state.userId, context)
+                    },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FileCopy,
+                        contentDescription = "Copy"
+                    )
+                }
+            }
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+
+                itemsIndexed(state.successOrders) { index, order ->
+
+                    if (index == state.successOrders.lastIndex) {
+                        LaunchedEffect(Unit) {
+                            orderViewModel.event(OrdersEvent.LoadOrders)
+                        }
+                    }
+
+                    OrderItem(
+                        order = order,
+                        onClick = {
+                            navController.navigate(OrderDetailsInfo(id = order.id))
+                        }
+                    )
+                }
+
+//            item {
+//                CircularProgressIndicator(
+//                    modifier = Modifier
+//                        .padding(16.dp)
+//                        .size(20.dp)
+//                )
+//            }
             }
         }
     }
 }
+
 @Composable
-fun OrderItem(order: Order, onClick: () -> Unit) {
+fun OrderItem(order: OrderModel, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -200,21 +195,21 @@ fun OrderItem(order: Order, onClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = order.title,
+                    text = order.order_name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
 
                 StatusChip(
-                    text = if (order.isCompleted) "Completed" else "In progress",
-                    statusType = if (order.isCompleted) StatusType.COMPLETED else StatusType.IN_PROGRESS
+                    text = if (order.completed) "Completed" else "In progress",
+                    statusType = if (order.completed) StatusType.COMPLETED else StatusType.IN_PROGRESS
                 )
             }
 
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "Created: ${order.createdDate}",
+                text = "Created: ${formatDateTime(order.created_at)}",
                 style = MaterialTheme.typography.bodySmall
             )
 
@@ -224,7 +219,7 @@ fun OrderItem(order: Order, onClick: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "CPM: ${order.cpm}")
+                Text(text = "CPM: ${order.spm}")
                 Text(text = "Budget: ${order.budget}")
             }
 
@@ -236,14 +231,14 @@ fun OrderItem(order: Order, onClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = order.channelUsername,
+                    text = order.channel_name,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary
                 )
 
                 StatusChip(
-                    text = if (order.isActive) "Active" else "Inactive",
-                    statusType = if (order.isActive) StatusType.ACTIVE else StatusType.INACTIVE
+                    text = if (order.is_active) "Active" else "Inactive",
+                    statusType = if (order.is_active) StatusType.ACTIVE else StatusType.INACTIVE
                 )
             }
         }

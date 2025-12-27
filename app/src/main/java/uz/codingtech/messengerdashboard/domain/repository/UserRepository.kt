@@ -1,10 +1,10 @@
 package uz.codingtech.messengerdashboard.domain.repository
 
-import retrofit2.Response
 import uz.codingtech.messengerdashboard.domain.models.Balance
+import uz.codingtech.messengerdashboard.utils.UiResult
 
 interface UserRepository {
 
-    suspend fun getBalance(): Response<Balance>?
+    suspend fun getBalance(): UiResult<Balance>
 
 }

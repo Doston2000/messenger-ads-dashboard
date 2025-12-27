@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import uz.codingtech.messengerdashboard.presentation.add_order.AddOrder
-import uz.codingtech.messengerdashboard.presentation.home.Home
+import uz.codingtech.messengerdashboard.presentation.orders.Orders
 import uz.codingtech.messengerdashboard.presentation.login.Login
 import uz.codingtech.messengerdashboard.presentation.order_details.OrderDetails
 
@@ -14,7 +14,7 @@ import uz.codingtech.messengerdashboard.presentation.order_details.OrderDetails
 object Login
 
 @Serializable
-object Home
+object Orders
 
 @Serializable
 object AddOrder
@@ -23,7 +23,7 @@ object AddOrder
 object OrderDetails
 
 @Serializable
-data class OrderDetailsInfo(val id: String)
+data class OrderDetailsInfo(val id: Int)
 
 @Composable
 fun MainNavGraph(navController: NavHostController, startRoute: Any) {
@@ -32,22 +32,17 @@ fun MainNavGraph(navController: NavHostController, startRoute: Any) {
         composable<Login> {
             Login(navController = navController)
         }
-        composable<Home> {
-            Home(navController = navController)
+        composable<Orders> {
+            Orders(navController = navController)
         }
         composable<AddOrder> {
-            AddOrder(
-                onBack = { navController.popBackStack() },
-                onSave = { newOrder ->
-                    navController.popBackStack()
-                }
-            )
+            AddOrder(navController = navController)
         }
         composable<OrderDetailsInfo> { backStackEntry ->
-            val channelId =
-                backStackEntry.arguments?.getLong("id") ?: return@composable
+            val orderId =
+                backStackEntry.arguments?.getInt("id") ?: return@composable
 
-            OrderDetails(channelId = channelId)
+            OrderDetails(navController = navController, orderId = orderId)
         }
     }
 }

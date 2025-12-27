@@ -1,7 +1,10 @@
 package uz.codingtech.messengerdashboard.presentation.login
 
+import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,12 +21,14 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -38,17 +44,34 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import uz.codingtech.messengerdashboard.domain.models.User
-import uz.codingtech.messengerdashboard.presentation.common.navigation.Home
-import uz.codingtech.messengerdashboard.presentation.main_app.vm.MainViewModel
+import uz.codingtech.messengerdashboard.presentation.common.navigation.Orders
 
 @Composable
-fun Login(navController: NavController, modifier: Modifier = Modifier, viewmodel: MainViewModel = hiltViewModel()) {
+fun Login(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    loginViewModel: LoginViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
+    val activity = context as? Activity
+
+    val state by loginViewModel.state.collectAsState()
+
+    BackHandler {
+        activity?.finish()
+    }
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    if (state.errorMessage != null) {
+        Toast.makeText(context, "${state.errorMessage?.name}", Toast.LENGTH_SHORT).show()
+    }
+
+    if (state.success){
+        navController.navigate(Orders)
+    }
 
     Box(
         modifier = modifier
@@ -133,13 +156,7 @@ fun Login(navController: NavController, modifier: Modifier = Modifier, viewmodel
                 Button(
                     onClick = {
                         if (username != "" && password != "") {
-                            viewmodel.login(User(username, password)){
-                                if (it == null){
-                                    navController.navigate(Home)
-                                }else{
-                                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                                }
-                            }
+                            loginViewModel.event(LoginEvent.Login(username, password))
                         }
                     },
                     modifier = Modifier
@@ -149,6 +166,21 @@ fun Login(navController: NavController, modifier: Modifier = Modifier, viewmodel
                 ) {
                     Text(text = "Login", style = MaterialTheme.typography.titleMedium)
                 }
+            }
+        }
+
+        if (state.loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+                    .clickable(enabled = true, onClick = {}),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    strokeWidth = 4.dp,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }

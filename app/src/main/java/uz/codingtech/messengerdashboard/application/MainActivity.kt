@@ -17,10 +17,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-//        userni umumiy balansi
-//        orderda cancel qo'shish
-//        qo'shhishda teglar kiritish
-
         setContent {
             MessengerDashboardTheme {
                 MainApp()
