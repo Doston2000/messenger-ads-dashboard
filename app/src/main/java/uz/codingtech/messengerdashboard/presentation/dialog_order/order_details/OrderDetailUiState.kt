@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.order_details
+package uz.codingtech.messengerdashboard.presentation.dialog_order.order_details
 
 import uz.codingtech.messengerdashboard.domain.models.OrderModel
 import uz.codingtech.messengerdashboard.utils.ErrorType

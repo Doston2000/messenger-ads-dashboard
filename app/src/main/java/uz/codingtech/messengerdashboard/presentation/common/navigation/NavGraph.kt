@@ -5,10 +5,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
-import uz.codingtech.messengerdashboard.presentation.add_order.AddOrder
-import uz.codingtech.messengerdashboard.presentation.orders.Orders
+import uz.codingtech.messengerdashboard.presentation.dialog_order.add_order.AddOrder
+import uz.codingtech.messengerdashboard.presentation.dialog_order.orders.Orders
 import uz.codingtech.messengerdashboard.presentation.login.Login
-import uz.codingtech.messengerdashboard.presentation.order_details.OrderDetails
+import uz.codingtech.messengerdashboard.presentation.dialog_order.order_details.OrderDetails
 
 @Serializable
 object Login

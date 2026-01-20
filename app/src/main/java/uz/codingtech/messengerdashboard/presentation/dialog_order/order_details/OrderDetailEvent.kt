@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.order_details
+package uz.codingtech.messengerdashboard.presentation.dialog_order.order_details
 
 sealed class OrderDetailEvent {
     data class ChangeActive(val id: Int, val active: Boolean) : OrderDetailEvent()

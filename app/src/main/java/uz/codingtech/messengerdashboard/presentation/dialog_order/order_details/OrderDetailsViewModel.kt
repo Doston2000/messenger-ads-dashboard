@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.order_details
+package uz.codingtech.messengerdashboard.presentation.dialog_order.order_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

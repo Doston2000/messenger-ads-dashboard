@@ -1,7 +1,6 @@
-package uz.codingtech.messengerdashboard.presentation.orders
+package uz.codingtech.messengerdashboard.presentation.dialog_order.orders
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -180,6 +179,17 @@ fun Orders(
 
 @Composable
 fun OrderItem(order: OrderModel, onClick: () -> Unit) {
+
+    var orderStatusStr = if (order.completed) "Completed" else "In progress"
+    if (order.cancelled) {
+        orderStatusStr = "Canceled"
+    }
+
+    var orderStatus = if (order.completed) StatusType.COMPLETED else StatusType.IN_PROGRESS
+    if (order.cancelled) {
+        orderStatus = StatusType.CANCELED
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -201,8 +211,8 @@ fun OrderItem(order: OrderModel, onClick: () -> Unit) {
                 )
 
                 StatusChip(
-                    text = if (order.completed) "Completed" else "In progress",
-                    statusType = if (order.completed) StatusType.COMPLETED else StatusType.IN_PROGRESS
+                    text = orderStatusStr,
+                    statusType = orderStatus
                 )
             }
 
@@ -248,6 +258,7 @@ fun OrderItem(order: OrderModel, onClick: () -> Unit) {
 enum class StatusType {
     COMPLETED,
     IN_PROGRESS,
+    CANCELED,
     ACTIVE,
     INACTIVE
 }
@@ -259,6 +270,7 @@ fun StatusChip(text: String, statusType: StatusType) {
         StatusType.IN_PROGRESS -> MaterialTheme.colorScheme.primary
         StatusType.ACTIVE -> Color(0xFF4CAF50)
         StatusType.INACTIVE -> MaterialTheme.colorScheme.error
+        StatusType.CANCELED -> MaterialTheme.colorScheme.error
     }
 
     val contentColor = Color.White

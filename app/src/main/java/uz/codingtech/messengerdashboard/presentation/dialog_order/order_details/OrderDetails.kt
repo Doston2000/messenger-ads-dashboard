@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.order_details
+package uz.codingtech.messengerdashboard.presentation.dialog_order.order_details
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -52,6 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import uz.codingtech.messengerdashboard.presentation.common.ClicksProgress
 import uz.codingtech.messengerdashboard.presentation.common.PlayPauseButton
 import uz.codingtech.messengerdashboard.presentation.common.StatusBadge
 import uz.codingtech.messengerdashboard.presentation.common.ViewsProgress
@@ -241,6 +242,11 @@ fun OrderDetails(
                 ViewsProgress(
                     viewed = state.success!!.shown_views,
                     total = state.success!!.total_views
+                )
+
+                ClicksProgress(
+                    views = state.success!!.shown_views,
+                    clicks = state.success!!.clicks
                 )
 
                 Row(

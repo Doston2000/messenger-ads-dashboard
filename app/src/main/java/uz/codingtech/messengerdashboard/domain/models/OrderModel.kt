@@ -1,12 +1,10 @@
 package uz.codingtech.messengerdashboard.domain.models
 
-import com.google.gson.annotations.SerializedName
-
 data class OrderModel(
 //    @SerializedName("")
     var budget: String,
     var cancelled: Boolean,
-    var channel_id: Int,
+    var channel_id: Long,
     var channel_name: String,
     var completed: Boolean,
     var created_at: String,
@@ -19,5 +17,6 @@ data class OrderModel(
     var spm: String,
     var tags: List<String>,
     var total_views: Int,
-    var max_view_per_user: Int
+    var max_view_per_user: Int,
+    var clicks:Int
 )

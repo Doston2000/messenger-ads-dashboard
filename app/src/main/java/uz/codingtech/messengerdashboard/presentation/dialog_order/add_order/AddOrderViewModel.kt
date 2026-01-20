@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.add_order
+package uz.codingtech.messengerdashboard.presentation.dialog_order.add_order
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

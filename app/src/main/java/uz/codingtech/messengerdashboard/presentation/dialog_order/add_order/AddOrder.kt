@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.add_order
+package uz.codingtech.messengerdashboard.presentation.dialog_order.add_order
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -123,21 +123,21 @@ fun AddOrder(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Order title") },
+                    label = { Text("Order title example: Order 1") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 OutlinedTextField(
                     value = channelUsername,
                     onValueChange = { channelUsername = it },
-                    label = { Text("Channel username") },
+                    label = { Text("Channel username example: vipadsuz") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 OutlinedTextField(
                     value = channelId,
                     onValueChange = { channelId = it },
-                    label = { Text("Channel ID") },
+                    label = { Text("Channel ID example: 1399936418") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -147,7 +147,7 @@ fun AddOrder(
                 OutlinedTextField(
                     value = cpm,
                     onValueChange = { cpm = it },
-                    label = { Text("CPM ($)") },
+                    label = { Text("CPM ($) example: 2.5") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -155,7 +155,7 @@ fun AddOrder(
                 OutlinedTextField(
                     value = budget,
                     onValueChange = { budget = it },
-                    label = { Text("Budget ($)") },
+                    label = { Text("Budget ($) example: 10") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -169,7 +169,7 @@ fun AddOrder(
                             1
                         }
                     },
-                    label = { Text("Max Views Per User") },
+                    label = { Text("Max Views Per User example: 5") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -177,7 +177,7 @@ fun AddOrder(
                 OutlinedTextField(
                     value = tagStr,
                     onValueChange = { tagStr = it },
-                    label = { Text("Tags ($)") },
+                    label = { Text("Tags example: news, world news, news24") },
                     modifier = Modifier.fillMaxWidth()
                 )
 

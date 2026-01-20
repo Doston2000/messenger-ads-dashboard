@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.orders
+package uz.codingtech.messengerdashboard.presentation.dialog_order.orders
 
 import uz.codingtech.messengerdashboard.domain.models.Balance
 import uz.codingtech.messengerdashboard.domain.models.OrderModel
