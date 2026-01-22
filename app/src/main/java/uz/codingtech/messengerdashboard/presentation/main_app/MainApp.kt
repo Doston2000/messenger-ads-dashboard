@@ -8,16 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import uz.codingtech.messengerdashboard.presentation.common.navigation.Orders
-import uz.codingtech.messengerdashboard.presentation.common.navigation.Login
+import uz.codingtech.messengerdashboard.presentation.common.navigation.ChatOrder
 import uz.codingtech.messengerdashboard.presentation.common.navigation.MainNavGraph
+import uz.codingtech.messengerdashboard.presentation.common.navigation.Menu
 
 @Composable
 fun MainApp() {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination
     val backgroundColor = when (currentRoute) {
-        Orders -> Color(0xFFFFFFFF)
+        ChatOrder -> Color(0xFFFFFFFF)
         else -> Color(0xFFFFFFFF)
     }
 
@@ -32,7 +32,7 @@ fun MainApp() {
             ,
             color = Color.Transparent
         ) {
-            MainNavGraph(navController, Login)
+            MainNavGraph(navController, Menu)
         }
     }
 }

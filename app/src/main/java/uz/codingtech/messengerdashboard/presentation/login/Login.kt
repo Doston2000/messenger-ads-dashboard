@@ -44,7 +44,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import uz.codingtech.messengerdashboard.presentation.common.navigation.Orders
+import uz.codingtech.messengerdashboard.presentation.common.navigation.Menu
 
 @Composable
 fun Login(
@@ -70,7 +70,7 @@ fun Login(
     }
 
     if (state.success){
-        navController.navigate(Orders)
+        navController.navigate(Menu)
     }
 
     Box(
