@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.dialog_order.chat_orders
+package uz.codingtech.messengerdashboard.presentation.chat_order.chat_orders
 
 sealed class ChatOrdersEvent {
     object LoadOrders : ChatOrdersEvent()

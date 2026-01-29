@@ -90,6 +90,19 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    implementation("androidx.media3:media3-ui:1.2.1")
+    implementation("androidx.media3:media3-datasource:1.2.1")
+
+// AGAR .m3u8 bo‘lsa (HLS):
+    implementation("androidx.media3:media3-exoplayer-hls:1.2.1")
+
+// AGAR .mpd bo‘lsa (DASH) kerak bo'lishi mumkin:
+    implementation("androidx.media3:media3-exoplayer-dash:1.2.1")
+
+
 }
 
 kapt {

@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.dialog_order.add_chat_order
+package uz.codingtech.messengerdashboard.presentation.chat_order.add_chat_order
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uz.codingtech.messengerdashboard.domain.models.OrderUseCaseModel
-import uz.codingtech.messengerdashboard.domain.models.PostOrderModel
+import uz.codingtech.messengerdashboard.domain.models.ChatOrderUseCaseModel
+import uz.codingtech.messengerdashboard.domain.models.PostOrderChatModel
 import uz.codingtech.messengerdashboard.utils.UiResult
 import javax.inject.Inject
 
 @HiltViewModel
 class AddChatOrderViewModel@Inject constructor(
-    private val orderUseCaseModel: OrderUseCaseModel
+    private val orderUseCaseModel: ChatOrderUseCaseModel
 ): ViewModel() {
 
     var navController: NavController? = null
@@ -26,7 +26,7 @@ class AddChatOrderViewModel@Inject constructor(
             ?.set("order_updated", true)
     }
 
-    private val _state = MutableStateFlow<AddChatOrderUiState>(AddChatOrderUiState())
+    private val _state = MutableStateFlow(AddChatOrderUiState())
     val state: StateFlow<AddChatOrderUiState> = _state
 
     fun event(addOrderEvent: AddChatOrderEvent) {
@@ -37,7 +37,7 @@ class AddChatOrderViewModel@Inject constructor(
         }
     }
 
-    private fun postOrder(postOrderModel: PostOrderModel) {
+    private fun postOrder(postOrderModel: PostOrderChatModel) {
         viewModelScope.launch {
             _state.update { it.copy(loading = true,) }
             val result = orderUseCaseModel.postOrderUseCase(postOrderModel)

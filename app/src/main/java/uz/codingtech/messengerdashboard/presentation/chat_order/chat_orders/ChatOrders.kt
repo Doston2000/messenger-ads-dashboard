@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.dialog_order.chat_orders
+package uz.codingtech.messengerdashboard.presentation.chat_order.chat_orders
 
 import android.app.Activity
 import androidx.compose.foundation.clickable
@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import uz.codingtech.messengerdashboard.domain.models.OrderModel
+import uz.codingtech.messengerdashboard.domain.models.ChatOrderModel
 import uz.codingtech.messengerdashboard.presentation.common.navigation.AddChatOrder
 import uz.codingtech.messengerdashboard.presentation.common.navigation.OrderDetailsInfo
 import uz.codingtech.messengerdashboard.utils.formatDateTime
@@ -171,16 +171,16 @@ fun ChatOrders(
 }
 
 @Composable
-fun OrderItem(order: OrderModel, onClick: () -> Unit) {
+fun OrderItem(order: ChatOrderModel, onClick: () -> Unit) {
 
     var orderStatusStr = if (order.completed) "Completed" else "In progress"
     if (order.cancelled) {
         orderStatusStr = "Canceled"
     }
 
-    var orderStatus = if (order.completed) StatusType.COMPLETED else StatusType.IN_PROGRESS
+    var orderStatus = if (order.completed) ChatOrderStatusType.COMPLETED else ChatOrderStatusType.IN_PROGRESS
     if (order.cancelled) {
-        orderStatus = StatusType.CANCELED
+        orderStatus = ChatOrderStatusType.CANCELED
     }
 
     Card(
@@ -241,14 +241,14 @@ fun OrderItem(order: OrderModel, onClick: () -> Unit) {
 
                 StatusChip(
                     text = if (order.is_active) "Active" else "Inactive",
-                    statusType = if (order.is_active) StatusType.ACTIVE else StatusType.INACTIVE
+                    statusType = if (order.is_active) ChatOrderStatusType.ACTIVE else ChatOrderStatusType.INACTIVE
                 )
             }
         }
     }
 }
 
-enum class StatusType {
+enum class ChatOrderStatusType {
     COMPLETED,
     IN_PROGRESS,
     CANCELED,
@@ -257,13 +257,13 @@ enum class StatusType {
 }
 
 @Composable
-fun StatusChip(text: String, statusType: StatusType) {
+fun StatusChip(text: String, statusType: ChatOrderStatusType) {
     val backgroundColor = when (statusType) {
-        StatusType.COMPLETED -> Color(0xFF4CAF50)
-        StatusType.IN_PROGRESS -> MaterialTheme.colorScheme.primary
-        StatusType.ACTIVE -> Color(0xFF4CAF50)
-        StatusType.INACTIVE -> MaterialTheme.colorScheme.error
-        StatusType.CANCELED -> MaterialTheme.colorScheme.error
+        ChatOrderStatusType.COMPLETED -> Color(0xFF4CAF50)
+        ChatOrderStatusType.IN_PROGRESS -> MaterialTheme.colorScheme.primary
+        ChatOrderStatusType.ACTIVE -> Color(0xFF4CAF50)
+        ChatOrderStatusType.INACTIVE -> MaterialTheme.colorScheme.error
+        ChatOrderStatusType.CANCELED -> MaterialTheme.colorScheme.error
     }
 
     val contentColor = Color.White

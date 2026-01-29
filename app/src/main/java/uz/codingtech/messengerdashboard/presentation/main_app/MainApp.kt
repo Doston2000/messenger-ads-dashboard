@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import uz.codingtech.messengerdashboard.presentation.common.navigation.ChatOrder
+import uz.codingtech.messengerdashboard.presentation.common.navigation.Login
 import uz.codingtech.messengerdashboard.presentation.common.navigation.MainNavGraph
 import uz.codingtech.messengerdashboard.presentation.common.navigation.Menu
 
@@ -32,7 +33,8 @@ fun MainApp() {
             ,
             color = Color.Transparent
         ) {
-            MainNavGraph(navController, Menu)
+//            MainNavGraph(navController, Menu)
+            MainNavGraph(navController, Login)
         }
     }
 }

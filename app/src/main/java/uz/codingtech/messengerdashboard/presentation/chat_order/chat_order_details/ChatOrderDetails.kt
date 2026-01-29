@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.dialog_order.chat_order_details
+package uz.codingtech.messengerdashboard.presentation.chat_order.chat_order_details
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

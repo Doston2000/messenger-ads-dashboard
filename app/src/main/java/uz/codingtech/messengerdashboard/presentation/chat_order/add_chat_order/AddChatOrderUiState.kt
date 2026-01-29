@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.dialog_order.add_chat_order
+package uz.codingtech.messengerdashboard.presentation.chat_order.add_chat_order
 
 import uz.codingtech.messengerdashboard.utils.ErrorType
 

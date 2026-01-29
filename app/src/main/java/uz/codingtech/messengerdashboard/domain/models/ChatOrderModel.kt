@@ -1,6 +1,6 @@
 package uz.codingtech.messengerdashboard.domain.models
 
-data class OrderModel(
+data class ChatOrderModel(
 //    @SerializedName("")
     var budget: String,
     var cancelled: Boolean,

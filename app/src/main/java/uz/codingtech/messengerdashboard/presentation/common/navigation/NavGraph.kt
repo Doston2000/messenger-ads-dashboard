@@ -5,9 +5,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
-import uz.codingtech.messengerdashboard.presentation.dialog_order.add_chat_order.AddChatOrder
-import uz.codingtech.messengerdashboard.presentation.dialog_order.chat_order_details.ChatOrderDetails
-import uz.codingtech.messengerdashboard.presentation.dialog_order.chat_orders.ChatOrders
+import uz.codingtech.messengerdashboard.presentation.chat_order.add_chat_order.AddChatOrder
+import uz.codingtech.messengerdashboard.presentation.chat_order.chat_order_details.ChatOrderDetails
+import uz.codingtech.messengerdashboard.presentation.chat_order.chat_orders.ChatOrders
 import uz.codingtech.messengerdashboard.presentation.login.Login
 import uz.codingtech.messengerdashboard.presentation.menu.Menu
 import uz.codingtech.messengerdashboard.presentation.post_order.add_post_order.AddPostOrder
@@ -36,7 +36,7 @@ object PostOrder
 object AddPostOrder
 
 @Serializable
-data class PostOrderDetails(val id: Int)
+data class PostOrderDetails(val id: String)
 
 @Composable
 fun MainNavGraph(navController: NavHostController, startRoute: Any) {
@@ -69,7 +69,7 @@ fun MainNavGraph(navController: NavHostController, startRoute: Any) {
         }
         composable<PostOrderDetails> { backStackEntry ->
             val orderId =
-                backStackEntry.arguments?.getInt("id") ?: return@composable
+                backStackEntry.arguments?.getString("id") ?: return@composable
 
             PostOrderDetails(navController = navController, orderId = orderId)
         }

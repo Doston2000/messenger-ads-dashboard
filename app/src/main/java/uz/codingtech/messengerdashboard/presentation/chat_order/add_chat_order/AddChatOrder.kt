@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.dialog_order.add_chat_order
+package uz.codingtech.messengerdashboard.presentation.chat_order.add_chat_order
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -49,7 +49,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import uz.codingtech.messengerdashboard.domain.models.PostOrderModel
+import uz.codingtech.messengerdashboard.domain.models.PostOrderChatModel
 import uz.codingtech.messengerdashboard.utils.calculateViews
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -243,7 +243,7 @@ fun AddChatOrder(
                         list.forEach {
                             tags.add(it.trim())
                         }
-                        val postOrder = PostOrderModel(
+                        val postOrder = PostOrderChatModel(
                             order_name = title,
                             channel_name = channelUsername,
                             channel_id = channelId,

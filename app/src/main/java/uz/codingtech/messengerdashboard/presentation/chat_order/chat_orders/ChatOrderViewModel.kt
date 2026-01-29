@@ -1,4 +1,4 @@
-package uz.codingtech.messengerdashboard.presentation.dialog_order.chat_orders
+package uz.codingtech.messengerdashboard.presentation.chat_order.chat_orders
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uz.codingtech.messengerdashboard.domain.models.AuthUseCaseModel
-import uz.codingtech.messengerdashboard.domain.models.OrderUseCaseModel
+import uz.codingtech.messengerdashboard.domain.models.ChatOrderUseCaseModel
 import uz.codingtech.messengerdashboard.domain.models.UserUseCaseModel
 import uz.codingtech.messengerdashboard.utils.UiResult
 import javax.inject.Inject
 
 @HiltViewModel
 class ChatOrderViewModel @Inject constructor(
-    private val orderUseCaseModel: OrderUseCaseModel,
+    private val orderUseCaseModel: ChatOrderUseCaseModel,
     private val userUseCaseModel: UserUseCaseModel,
     private val authUseCaseModel: AuthUseCaseModel
 ) : ViewModel() {

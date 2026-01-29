@@ -1,4 +1,5 @@
 package uz.codingtech.messengerdashboard.presentation.post_order.post_orders
 
-class PostOrdersEvent {
+sealed class PostOrdersEvent {
+    object LoadOrders : PostOrdersEvent()
 }
